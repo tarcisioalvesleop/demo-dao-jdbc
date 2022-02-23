@@ -53,17 +53,10 @@ public class SellerDaoJDBC implements SellerDao {
 			rs = st.executeQuery();
 			//passando a tabela do query resultante para objetos em java
 			if(rs.next()) {
-				Department dep = new Department();
-				dep.setId(rs.getInt("DepartmentId"));//igual no banco de dados nome do departamento
-				dep.setName(rs.getString("DepName"));
+				//montando o objeto department com os dados do rs
+				Department dep = instantiateDepartment(rs);
 				//montando o objeto Seller com os dados do rs
-				Seller obj = new Seller();
-				obj.setId(rs.getInt("Id"));
-				obj.setName(rs.getString("Name"));
-				obj.setEmail(rs.getString("Email"));
-				obj.setBaseSalary(rs.getDouble("BaseSalary"));
-				obj.setBirthDate(rs.getDate("BirthDate"));
-				obj.setDepartment(dep);
+				Seller obj = instantiateSeller(rs, dep);
 				
 				return obj;				
 			}
@@ -77,6 +70,28 @@ public class SellerDaoJDBC implements SellerDao {
 			DB.closeResultSet(rs);
 			//a conexão manteve aberta pelo fato de outro ser executado em seguida e será fechada no program main
 		}
+	}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {//propagando a exceção rs(foi tratada onde chamou a função)
+		//montando o objeto Seller com os dados do rs
+		Seller obj = new Seller();
+		obj.setId(rs.getInt("Id"));
+		obj.setName(rs.getString("Name"));
+		obj.setEmail(rs.getString("Email"));
+		obj.setBaseSalary(rs.getDouble("BaseSalary"));
+		obj.setBirthDate(rs.getDate("BirthDate"));
+		obj.setDepartment(dep);
+		
+		return obj;
+	}
+
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {//propagando a exceção rs (foi tratada onde chamou)
+		//montando o objeto Departmet com os dados do rs
+		Department dep = new Department();
+		dep.setId(rs.getInt("DepartmentId"));//igual no banco de dados nome do departamento
+		dep.setName(rs.getString("DepName"));
+		
+		return dep;
 	}
 
 	@Override
